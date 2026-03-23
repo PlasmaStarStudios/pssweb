@@ -108,7 +108,7 @@ const topbarTemplate = `
   </div>
   <nav>
     <ul>
-      <li><a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/">Home</a></li>
+      <li><a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/index.html">Home</a></li>
       <li>
         <a href="#">Projects</a>
         <ul class="dropdown">
