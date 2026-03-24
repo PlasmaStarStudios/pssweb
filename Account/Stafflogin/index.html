@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Account | PlasmaStarStudios</title>
+    <link rel="stylesheet" href="style.css"> <style>
+        /* Modern Dark Theme Adjustments for the Account Page */
+        body { background-color: #1a1a1a; color: white; margin: 0; font-family: 'Segoe UI', sans-serif; }
+        
+        .content-wrapper {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        /* Container for each snippet */
+        .snippet-container {
+            background-color: #262626;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-left: 5px solid #722a9e;
+        }
+
+        .snippet-header {
+            border-bottom: 1px solid #444;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            color: #b366ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9em;
+        }
+
+        /* Playlist Specific Styles */
+        .video-container { position: relative; margin-bottom: 20px; border-radius: 8px; overflow: hidden; }
+        .toggle-button { padding: 8px 16px; border: none; color: white; cursor: pointer; border-radius: 4px; }
+        .toggle-on { background-color: #27ae60; }
+        .toggle-off { background-color: #c0392b; }
+        
+        /* Email System Specific Adjustments */
+        .email-system input, .email-system textarea {
+            background: #1a1a1a; border: 1px solid #444; color: white; padding: 10px; border-radius: 5px;
+        }
+        .email-system button { background: #722a9e; border: none; transition: 0.3s; }
+        .email-system button:hover { background: #8e3bc4; }
+        
+        iframe { border-radius: 8px; background: #000; }
+    </style>
+</head>
+<body>
+
+    <div id="topbar-placeholder"></div>
+    <script src="topbar.js"></script>
+
+    <div class="content-wrapper">
+
+        <section class="snippet-container" id="section-job">
+            <div class="snippet-header">💼 Job Essentials</div>
+            <iframe id="job-embed-frame" src="" width="100%" height="500px" frameborder="0" style="display:none;"></iframe>
+            <div id="job-message" style="display:none; padding: 20px; background: rgba(114, 42, 158, 0.1); border-radius: 8px;"></div>
+        </section>
+
+        <section class="snippet-container" id="section-agenda">
+            <div class="snippet-header">📅 Schedule & Agenda</div>
+            <iframe id="embed-frame" src="" width="100%" height="600px" frameborder="0"></iframe>
+        </section>
+
+        <section class="snippet-container email-system" id="section-mail">
+            <div class="snippet-header">✉️ Internal Mail</div>
+            
+            <div class="mail-compose">
+                <h3>Send a Message</h3>
+                <form id="messageForm">
+                    <label>Recipient Email:</label>
+                    <input type="text" id="userEmail" placeholder="user@plasmastarstudios.com" required>
+                    <label>Subject:</label>
+                    <input type="text" id="subject" required>
+                    <label>Message:</label>
+                    <textarea id="message" rows="4" required></textarea>
+                    <button type="submit" style="margin-top:10px; padding:10px 20px; cursor:pointer; color:white;">Send Message</button>
+                </form>
+            </div>
+
+            <hr style="border:0; border-top:1px solid #444; margin:30px 0;">
+
+            <div class="mail-inbox">
+                <h3>Inbox</h3>
+                <ul id="subjectList" style="list-style:none; padding:0;"></ul>
+                <div id="messageDetails" style="display:none;">
+                    <h4>Message Details</h4>
+                    <textarea id="messageText" readonly style="width:100%; height:150px;"></textarea>
+                    <p id="senderLabel" style="font-style:italic; color:#aaa;"></p>
+                    <button id="replyButton">Reply</button>
+                    <button id="deleteButton" style="background:#c0392b;">Delete</button>
+                    <button id="backButton" style="background:#555;">Back</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="snippet-container" id="section-playlist">
+            <div class="snippet-header">🎵 Media Playlist</div>
+            <div style="margin-bottom:20px;">
+                <input type="text" id="videoInput" placeholder="YouTube URL" style="padding:10px; width:250px; border-radius:4px; border:1px solid #444; background:#1a1a1a; color:white;">
+                <button onclick="addVideo()" style="padding:10px; background:#722a9e; color:white; border:none; border-radius:4px; cursor:pointer;">Add Video</button>
+            </div>
+            
+            <h2 id="playlistTitle">Your Playlist (0/10)</h2>
+            <div id="videoList"></div>
+            
+            <div style="margin-top:20px; display:flex; gap:10px;">
+                <button onclick="loadVideos()" style="padding:10px; background:#555; color:white; border:none; cursor:pointer;">🔄 Refresh Playlist</button>
+                <button id="loopToggleButton" class="toggle-button toggle-off" onclick="toggleLoop()">Loop Off</button>
+                <button id="privacyToggleButton" class="toggle-button toggle-off" onclick="togglePrivacy()">Privacy Off</button>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        const CURRENT_USER_ID = localStorage.getItem('CurrentLoggedInUSERID');
+        
+        // --- 1 & 2: Job & Agenda Logic ---
+        async function initWorkAndAgenda() {
+            try {
+                const response = await fetch('https://670968a0af1a3998baa16e22.mockapi.io/pspninf/inf');
+                const data = await response.json();
+                const user = data.find(entry => entry.UserID === CURRENT_USER_ID);
+
+                if (user) {
+                    // Agenda
+                    document.getElementById('embed-frame').src = user.agendaurl || 'https://plasmastarstudios.com';
+                    
+                    // Job Essentials
+                    const job = user.Job ? user.Job.toLowerCase() : "";
+                    const jobMap = {
+                        "management": "https://www.plasmastarstudios.com/-1/stafflogin/embedables/management",
+                        "musiccomposter": "https://www.plasmastarstudios.com/-5/work/stafflogin/embedables/musiccomposter"
+                    };
+
+                    if (jobMap[job]) {
+                        document.getElementById('job-embed-frame').src = jobMap[job];
+                        document.getElementById('job-embed-frame').style.display = 'block';
+                    } else {
+                        document.getElementById('job-message').textContent = `Position: ${user.Job || 'Staff'}. No specific Job Essentials required.`;
+                        document.getElementById('job-message').style.display = 'block';
+                    }
+                }
+            } catch (e) { console.error("Data Load Error", e); }
+        }
+
+        // --- 3: Internal Mail Logic ---
+        let USER_MAIL_ADDR = '';
+        let messageData = [];
+
+        async function initMail() {
+            if (!CURRENT_USER_ID) return;
+            const res = await fetch(`https://670968a0af1a3998baa16e22.mockapi.io/pspninf/inf?UserID=${CURRENT_USER_ID}`);
+            const data = await res.json();
+            if (data.length > 0) {
+                USER_MAIL_ADDR = `${data[0].ProfileName}@plasmastarstudios.com`;
+                loadInbox();
+            }
+        }
+
+        async function loadInbox() {
+            const res = await fetch('https://66bccc7b24da2de7ff6be138.mockapi.io/EMAILINBOX');
+            const data = await res.json();
+            messageData = data.filter(item => item.USEREMAIL.includes(USER_MAIL_ADDR));
+            const list = document.getElementById('subjectList');
+            list.innerHTML = '';
+            messageData.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `<button onclick="showMessageDetails(${index})" style="width:100%; text-align:left; padding:10px; margin-bottom:5px; background:#333; color:white; border:1px solid #444; cursor:pointer;">${item.SUBJECT}</button>`;
+                list.appendChild(li);
+            });
+        }
+
+        function showMessageDetails(index) {
+            const msg = messageData[index];
+            document.getElementById('messageText').value = msg.MESSAGE;
+            document.getElementById('senderLabel').textContent = `From: ${msg.SENDER}`;
+            document.getElementById('messageDetails').style.display = 'block';
+            document.getElementById('subjectList').style.display = 'none';
+            
+            document.getElementById('deleteButton').onclick = () => deleteMessage(msg.id);
+            document.getElementById('replyButton').onclick = () => {
+                document.getElementById('userEmail').value = msg.SENDER;
+                document.getElementById('subject').value = `Re: ${msg.SUBJECT}`;
+                window.scrollTo(0, document.getElementById('section-mail').offsetTop);
+            };
+        }
+
+        document.getElementById('backButton').onclick = () => {
+            document.getElementById('messageDetails').style.display = 'none';
+            document.getElementById('subjectList').style.display = 'block';
+        };
+
+        async function deleteMessage(id) {
+            await fetch(`https://66bccc7b24da2de7ff6be138.mockapi.io/EMAILINBOX/${id}`, { method: 'DELETE' });
+            loadInbox();
+            document.getElementById('messageDetails').style.display = 'none';
+            document.getElementById('subjectList').style.display = 'block';
+        }
+
+        document.getElementById('messageForm').onsubmit = async (e) => {
+            e.preventDefault();
+            await fetch('https://66bccc7b24da2de7ff6be138.mockapi.io/EMAILINBOX', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    SENDER: USER_MAIL_ADDR,
+                    SUBJECT: document.getElementById('subject').value,
+                    MESSAGE: document.getElementById('message').value,
+                    USEREMAIL: document.getElementById('userEmail').value
+                })
+            });
+            alert("Sent!");
+            loadInbox();
+        };
+
+        // --- 4: Playlist Logic (Simplified for integration) ---
+        const videoBaseURL = 'https://6670255a0900b5f87249953b.mockapi.io/API/Videos';
+        let loopEnabled = false;
+        let privacyEnabled = false;
+        let players = [];
+
+        async function loadVideos() {
+            const res = await fetch(videoBaseURL);
+            const videos = await res.json();
+            const userVideos = videos.filter(v => v.accountName === CURRENT_USER_ID);
+            document.getElementById('playlistTitle').textContent = `Your Playlist (${userVideos.length}/10)`;
+            const list = document.getElementById('videoList');
+            list.innerHTML = '';
+            userVideos.forEach(v => {
+                const div = document.createElement('div');
+                div.className = "video-container";
+                const vidId = v.url.split('embed/')[1] || v.url;
+                div.innerHTML = `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${vidId}" frameborder="0" allowfullscreen></iframe>
+                <button onclick="deleteVideo('${v.id}')" style="background:red; color:white; border:none; padding:5px; cursor:pointer;">Delete</button>`;
+                list.appendChild(div);
+            });
+        }
+
+        async function addVideo() {
+            const url = document.getElementById('videoInput').value;
+            const vidId = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/user\/\S+|\/ytscreeningroom\?v=|\/sanday\?v=))([\w\-]{11})/)[1];
+            await fetch(videoBaseURL, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ url: `https://www.youtube.com/embed/${vidId}`, accountName: CURRENT_USER_ID, customname: 'New Video' })
+            });
+            loadVideos();
+        }
+
+        async function deleteVideo(id) {
+            await fetch(`${videoBaseURL}/${id}`, { method: 'DELETE' });
+            loadVideos();
+        }
+
+        function toggleLoop() { loopEnabled = !loopEnabled; document.getElementById('loopToggleButton').textContent = loopEnabled ? "Loop On" : "Loop Off"; }
+        function togglePrivacy() { privacyEnabled = !privacyEnabled; document.getElementById('privacyToggleButton').textContent = privacyEnabled ? "Privacy On" : "Privacy Off"; }
+
+        // Start everything
+        window.onload = () => {
+            initWorkAndAgenda();
+            initMail();
+            loadVideos();
+        };
+    </script>
+</body>
+</html>
