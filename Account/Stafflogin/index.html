@@ -1,275 +1,216 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Account | PlasmaStarStudios</title>
-    <link rel="stylesheet" href="style.css"> <style>
-        /* Modern Dark Theme Adjustments for the Account Page */
-        body { background-color: #1a1a1a; color: white; margin: 0; font-family: 'Segoe UI', sans-serif; }
-        
-        .content-wrapper {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        /* Container for each snippet */
-        .snippet-container {
-            background-color: #262626;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            border-left: 5px solid #722a9e;
-        }
-
-        .snippet-header {
-            border-bottom: 1px solid #444;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            color: #b366ff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-size: 0.9em;
-        }
-
-        /* Playlist Specific Styles */
-        .video-container { position: relative; margin-bottom: 20px; border-radius: 8px; overflow: hidden; }
-        .toggle-button { padding: 8px 16px; border: none; color: white; cursor: pointer; border-radius: 4px; }
-        .toggle-on { background-color: #27ae60; }
-        .toggle-off { background-color: #c0392b; }
-        
-        /* Email System Specific Adjustments */
-        .email-system input, .email-system textarea {
-            background: #1a1a1a; border: 1px solid #444; color: white; padding: 10px; border-radius: 5px;
-        }
-        .email-system button { background: #722a9e; border: none; transition: 0.3s; }
-        .email-system button:hover { background: #8e3bc4; }
-        
-        iframe { border-radius: 8px; background: #000; }
-    </style>
-</head>
-<body>
-
-    <div id="topbar-placeholder"></div>
-    <script src="topbar.js"></script>
-
-    <div class="content-wrapper">
-
-        <section class="snippet-container" id="section-job">
-            <div class="snippet-header">💼 Job Essentials</div>
-            <iframe id="job-embed-frame" src="" width="100%" height="500px" frameborder="0" style="display:none;"></iframe>
-            <div id="job-message" style="display:none; padding: 20px; background: rgba(114, 42, 158, 0.1); border-radius: 8px;"></div>
-        </section>
-
-        <section class="snippet-container" id="section-agenda">
-            <div class="snippet-header">📅 Schedule & Agenda</div>
-            <iframe id="embed-frame" src="" width="100%" height="600px" frameborder="0"></iframe>
-        </section>
-
-        <section class="snippet-container email-system" id="section-mail">
-            <div class="snippet-header">✉️ Internal Mail</div>
-            
-            <div class="mail-compose">
-                <h3>Send a Message</h3>
-                <form id="messageForm">
-                    <label>Recipient Email:</label>
-                    <input type="text" id="userEmail" placeholder="user@plasmastarstudios.com" required>
-                    <label>Subject:</label>
-                    <input type="text" id="subject" required>
-                    <label>Message:</label>
-                    <textarea id="message" rows="4" required></textarea>
-                    <button type="submit" style="margin-top:10px; padding:10px 20px; cursor:pointer; color:white;">Send Message</button>
-                </form>
-            </div>
-
-            <hr style="border:0; border-top:1px solid #444; margin:30px 0;">
-
-            <div class="mail-inbox">
-                <h3>Inbox</h3>
-                <ul id="subjectList" style="list-style:none; padding:0;"></ul>
-                <div id="messageDetails" style="display:none;">
-                    <h4>Message Details</h4>
-                    <textarea id="messageText" readonly style="width:100%; height:150px;"></textarea>
-                    <p id="senderLabel" style="font-style:italic; color:#aaa;"></p>
-                    <button id="replyButton">Reply</button>
-                    <button id="deleteButton" style="background:#c0392b;">Delete</button>
-                    <button id="backButton" style="background:#555;">Back</button>
-                </div>
-            </div>
-        </section>
-
-        <section class="snippet-container" id="section-playlist">
-            <div class="snippet-header">🎵 Media Playlist</div>
-            <div style="margin-bottom:20px;">
-                <input type="text" id="videoInput" placeholder="YouTube URL" style="padding:10px; width:250px; border-radius:4px; border:1px solid #444; background:#1a1a1a; color:white;">
-                <button onclick="addVideo()" style="padding:10px; background:#722a9e; color:white; border:none; border-radius:4px; cursor:pointer;">Add Video</button>
-            </div>
-            
-            <h2 id="playlistTitle">Your Playlist (0/10)</h2>
-            <div id="videoList"></div>
-            
-            <div style="margin-top:20px; display:flex; gap:10px;">
-                <button onclick="loadVideos()" style="padding:10px; background:#555; color:white; border:none; cursor:pointer;">🔄 Refresh Playlist</button>
-                <button id="loopToggleButton" class="toggle-button toggle-off" onclick="toggleLoop()">Loop Off</button>
-                <button id="privacyToggleButton" class="toggle-button toggle-off" onclick="togglePrivacy()">Privacy Off</button>
-            </div>
-        </section>
-
+<section class="snippet-container" id="section-playlist">
+    <div class="snippet-header">🎵 Media Playlist</div>
+    
+    <div class="playlist-controls" style="margin-bottom: 20px;">
+        <input type="text" id="videoInput" placeholder="Enter YouTube Video URL" style="padding:10px; width:60%; background:#1a1a1a; border:1px solid #444; color:white; border-radius:4px;">
+        <button type="button" onclick="addVideo()" style="padding:10px 20px; background:#722a9e; color:white; border:none; border-radius:4px; cursor:pointer;">Add</button>
     </div>
 
-    <script src="https://www.youtube.com/iframe_api"></script>
-    <script>
-        const CURRENT_USER_ID = localStorage.getItem('CurrentLoggedInUSERID');
-        
-        // --- 1 & 2: Job & Agenda Logic ---
-        async function initWorkAndAgenda() {
-            try {
-                const response = await fetch('https://670968a0af1a3998baa16e22.mockapi.io/pspninf/inf');
-                const data = await response.json();
-                const user = data.find(entry => entry.UserID === CURRENT_USER_ID);
+    <h2 id="playlistTitle" style="color: #b366ff;">Your Playlist (0/10)</h2>
+    
+    <div id="videoList" style="display: flex; flex-direction: column; gap:30px;">
+        </div>
 
-                if (user) {
-                    // Agenda
-                    document.getElementById('embed-frame').src = user.agendaurl || 'https://plasmastarstudios.com';
-                    
-                    // Job Essentials
-                    const job = user.Job ? user.Job.toLowerCase() : "";
-                    const jobMap = {
-                        "management": "https://www.plasmastarstudios.com/-1/stafflogin/embedables/management",
-                        "musiccomposter": "https://www.plasmastarstudios.com/-5/work/stafflogin/embedables/musiccomposter"
-                    };
+    <div style="margin-top: 30px; display: flex; gap: 10px;">
+        <button type="button" onclick="loadVideos()" style="padding:10px; background:#444; color:white; border:none; cursor:pointer;">Load Videos</button>
+        <button id="loopToggleButton" class="toggle-button toggle-off" onclick="toggleLoop()">Loop Off</button>
+        <button id="privacyToggleButton" class="toggle-button toggle-off" onclick="togglePrivacy()">Privacy Off</button>
+    </div>
+</section>
 
-                    if (jobMap[job]) {
-                        document.getElementById('job-embed-frame').src = jobMap[job];
-                        document.getElementById('job-embed-frame').style.display = 'block';
-                    } else {
-                        document.getElementById('job-message').textContent = `Position: ${user.Job || 'Staff'}. No specific Job Essentials required.`;
-                        document.getElementById('job-message').style.display = 'block';
-                    }
-                }
-            } catch (e) { console.error("Data Load Error", e); }
-        }
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+    const baseURL = 'https://6670255a0900b5f87249953b.mockapi.io/API/Videos';
+    const ACCOUNTID = localStorage.getItem('CurrentLoggedInUSERID');
+    let loopEnabled = false;
+    let privacyEnabled = false;
+    let players = [];
 
-        // --- 3: Internal Mail Logic ---
-        let USER_MAIL_ADDR = '';
-        let messageData = [];
+    // --- Legacy Playlist Functions ---
 
-        async function initMail() {
-            if (!CURRENT_USER_ID) return;
-            const res = await fetch(`https://670968a0af1a3998baa16e22.mockapi.io/pspninf/inf?UserID=${CURRENT_USER_ID}`);
-            const data = await res.json();
-            if (data.length > 0) {
-                USER_MAIL_ADDR = `${data[0].ProfileName}@plasmastarstudios.com`;
-                loadInbox();
+    function onYouTubeIframeAPIReady() {
+        console.log("YouTube API Ready");
+    }
+
+    async function addVideo() {
+        let videoUrl = document.getElementById('videoInput').value.trim();
+        if (!videoUrl) return;
+
+        try {
+            const response = await fetch(baseURL);
+            const videos = await response.json();
+            const userVideos = videos.filter(v => v.accountName === ACCOUNTID);
+
+            if (userVideos.length >= 10) {
+                alert('Limit reached: 10 videos max.');
+                return;
             }
-        }
 
-        async function loadInbox() {
-            const res = await fetch('https://66bccc7b24da2de7ff6be138.mockapi.io/EMAILINBOX');
-            const data = await res.json();
-            messageData = data.filter(item => item.USEREMAIL.includes(USER_MAIL_ADDR));
-            const list = document.getElementById('subjectList');
-            list.innerHTML = '';
-            messageData.forEach((item, index) => {
-                const li = document.createElement('li');
-                li.innerHTML = `<button onclick="showMessageDetails(${index})" style="width:100%; text-align:left; padding:10px; margin-bottom:5px; background:#333; color:white; border:1px solid #444; cursor:pointer;">${item.SUBJECT}</button>`;
-                list.appendChild(li);
-            });
-        }
+            if (isValidYouTubeUrl(videoUrl)) {
+                const videoId = extractVideoId(videoUrl);
+                const embedUrl = `https://www.youtube.com/embed/${videoId}`;
 
-        function showMessageDetails(index) {
-            const msg = messageData[index];
-            document.getElementById('messageText').value = msg.MESSAGE;
-            document.getElementById('senderLabel').textContent = `From: ${msg.SENDER}`;
-            document.getElementById('messageDetails').style.display = 'block';
-            document.getElementById('subjectList').style.display = 'none';
-            
-            document.getElementById('deleteButton').onclick = () => deleteMessage(msg.id);
-            document.getElementById('replyButton').onclick = () => {
-                document.getElementById('userEmail').value = msg.SENDER;
-                document.getElementById('subject').value = `Re: ${msg.SUBJECT}`;
-                window.scrollTo(0, document.getElementById('section-mail').offsetTop);
-            };
-        }
+                await fetch(baseURL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: embedUrl, accountName: ACCOUNTID, customname: 'Unnamed' })
+                });
+                document.getElementById('videoInput').value = '';
+                alert('Video added. Click Load Videos to refresh.');
+            }
+        } catch (error) { console.error(error); }
+    }
 
-        document.getElementById('backButton').onclick = () => {
-            document.getElementById('messageDetails').style.display = 'none';
-            document.getElementById('subjectList').style.display = 'block';
-        };
+    async function loadVideos() {
+        try {
+            const response = await fetch(baseURL);
+            const videos = await response.json();
+            const userVideos = videos.filter(v => v.accountName === ACCOUNTID);
 
-        async function deleteMessage(id) {
-            await fetch(`https://66bccc7b24da2de7ff6be138.mockapi.io/EMAILINBOX/${id}`, { method: 'DELETE' });
-            loadInbox();
-            document.getElementById('messageDetails').style.display = 'none';
-            document.getElementById('subjectList').style.display = 'block';
-        }
-
-        document.getElementById('messageForm').onsubmit = async (e) => {
-            e.preventDefault();
-            await fetch('https://66bccc7b24da2de7ff6be138.mockapi.io/EMAILINBOX', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    SENDER: USER_MAIL_ADDR,
-                    SUBJECT: document.getElementById('subject').value,
-                    MESSAGE: document.getElementById('message').value,
-                    USEREMAIL: document.getElementById('userEmail').value
-                })
-            });
-            alert("Sent!");
-            loadInbox();
-        };
-
-        // --- 4: Playlist Logic (Simplified for integration) ---
-        const videoBaseURL = 'https://6670255a0900b5f87249953b.mockapi.io/API/Videos';
-        let loopEnabled = false;
-        let privacyEnabled = false;
-        let players = [];
-
-        async function loadVideos() {
-            const res = await fetch(videoBaseURL);
-            const videos = await res.json();
-            const userVideos = videos.filter(v => v.accountName === CURRENT_USER_ID);
             document.getElementById('playlistTitle').textContent = `Your Playlist (${userVideos.length}/10)`;
-            const list = document.getElementById('videoList');
-            list.innerHTML = '';
-            userVideos.forEach(v => {
-                const div = document.createElement('div');
-                div.className = "video-container";
-                const vidId = v.url.split('embed/')[1] || v.url;
-                div.innerHTML = `<iframe width="100%" height="315" src="https://www.youtube.com/embed/${vidId}" frameborder="0" allowfullscreen></iframe>
-                <button onclick="deleteVideo('${v.id}')" style="background:red; color:white; border:none; padding:5px; cursor:pointer;">Delete</button>`;
-                list.appendChild(div);
+            const container = document.getElementById('videoList');
+            container.innerHTML = '';
+
+            // Cleanup old players
+            players.forEach(p => { if(p.player) p.player.destroy(); });
+            players = [];
+
+            userVideos.forEach(video => {
+                const videoId = extractVideoId(video.url);
+                
+                // Main Container
+                const videoDiv = document.createElement('div');
+                videoDiv.className = 'video-container';
+                videoDiv.style.position = 'relative';
+
+                // Overlay (Privacy GIF)
+                let overlay = null;
+                if (privacyEnabled) {
+                    overlay = document.createElement('div');
+                    overlay.className = 'video-overlay';
+                    overlay.style.cssText = "position:absolute; background:#000; width:560px; height:315px; top:0; left:0; z-index:1; display:flex; justify-content:center; align-items:center; flex-direction:column;";
+                    
+                    const img = document.createElement('img');
+                    img.src = "https://www.hondaofpasadena.com/assets/d405/img/img2/AudioVisualizer.gif";
+                    img.style.cssText = "width:100%; height:100%; object-fit:cover; display:none;";
+                    
+                    const title = document.createElement('div');
+                    title.className = 'title';
+                    title.style.cssText = "color:white; font-size:24px; font-weight:bold; position:absolute; z-index:2;";
+                    title.textContent = video.customname || 'Unnamed Video';
+
+                    overlay.appendChild(img);
+                    overlay.appendChild(title);
+                    videoDiv.appendChild(overlay);
+                }
+
+                // Iframe
+                const iframe = document.createElement('iframe');
+                iframe.width = '560';
+                iframe.height = '315';
+                iframe.src = `${video.url}?enablejsapi=1&autoplay=0&loop=${loopEnabled ? 1 : 0}&playlist=${videoId}`;
+                iframe.frameBorder = "0";
+                
+                // Buttons
+                const btnContainer = document.createElement('div');
+                btnContainer.style.marginTop = "10px";
+                btnContainer.innerHTML = `
+                    <button onclick="togglePlayPause('${videoId}', this)" data-video-id="${videoId}" style="padding:5px 15px;">Play</button>
+                    <button onclick="renameVideo('${video.id}')" style="background:#007bff; color:white; border:none; padding:5px 10px; margin-left:5px;">Rename</button>
+                    <button onclick="deleteVideo('${video.id}')" style="background:red; color:white; border:none; padding:5px 10px; margin-left:5px;">Delete</button>
+                `;
+
+                videoDiv.appendChild(iframe);
+                videoDiv.appendChild(btnContainer);
+                container.appendChild(videoDiv);
+
+                const player = new YT.Player(iframe, {
+                    events: {
+                        'onReady': (e) => { 
+                            const pData = players.find(p => p.videoId === videoId);
+                            if(pData) pData.isReady = true;
+                        },
+                        'onStateChange': (e) => handlePlayerState(e, videoId, overlay)
+                    }
+                });
+
+                players.push({
+                    videoId: videoId,
+                    player: player,
+                    isReady: false,
+                    overlayImg: overlay ? overlay.querySelector('img') : null
+                });
             });
+        } catch (e) { console.error(e); }
+    }
+
+    function handlePlayerState(event, videoId, overlay) {
+        const btn = document.querySelector(`button[data-video-id="${videoId}"]`);
+        const pData = players.find(p => p.videoId === videoId);
+
+        if (pData && privacyEnabled && pData.overlayImg) {
+            pData.overlayImg.style.display = (event.data === YT.PlayerState.PLAYING) ? 'block' : 'none';
         }
 
-        async function addVideo() {
-            const url = document.getElementById('videoInput').value;
-            const vidId = url.match(/(?:youtu\.be\/|youtube\.com(?:\/embed\/|\/v\/|\/watch\?v=|\/user\/\S+|\/ytscreeningroom\?v=|\/sanday\?v=))([\w\-]{11})/)[1];
-            await fetch(videoBaseURL, {
-                method: 'POST',
+        if (btn) {
+            btn.textContent = (event.data === YT.PlayerState.PLAYING) ? 'Pause' : 'Play';
+        }
+    }
+
+    function togglePlayPause(videoId, btn) {
+        const pData = players.find(p => p.videoId === videoId);
+        if (pData && pData.isReady) {
+            const state = pData.player.getPlayerState();
+            if (state === YT.PlayerState.PLAYING) pData.player.pauseVideo();
+            else pData.player.playVideo();
+        }
+    }
+
+    async function renameVideo(id) {
+        const name = prompt('Enter new name:');
+        if (name) {
+            await fetch(`${baseURL}/${id}`, {
+                method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ url: `https://www.youtube.com/embed/${vidId}`, accountName: CURRENT_USER_ID, customname: 'New Video' })
+                body: JSON.stringify({ customname: name })
             });
             loadVideos();
         }
+    }
 
-        async function deleteVideo(id) {
-            await fetch(`${videoBaseURL}/${id}`, { method: 'DELETE' });
+    async function deleteVideo(id) {
+        if(confirm("Delete this video?")) {
+            await fetch(`${baseURL}/${id}`, { method: 'DELETE' });
             loadVideos();
         }
+    }
 
-        function toggleLoop() { loopEnabled = !loopEnabled; document.getElementById('loopToggleButton').textContent = loopEnabled ? "Loop On" : "Loop Off"; }
-        function togglePrivacy() { privacyEnabled = !privacyEnabled; document.getElementById('privacyToggleButton').textContent = privacyEnabled ? "Privacy On" : "Privacy Off"; }
+    function toggleLoop() {
+        loopEnabled = !loopEnabled;
+        const b = document.getElementById('loopToggleButton');
+        b.className = loopEnabled ? 'toggle-button toggle-on' : 'toggle-button toggle-off';
+        b.textContent = loopEnabled ? 'Loop On' : 'Loop Off';
+    }
 
-        // Start everything
-        window.onload = () => {
-            initWorkAndAgenda();
-            initMail();
-            loadVideos();
-        };
-    </script>
+    function togglePrivacy() {
+        privacyEnabled = !privacyEnabled;
+        const b = document.getElementById('privacyToggleButton');
+        b.className = privacyEnabled ? 'toggle-button toggle-on' : 'toggle-button toggle-off';
+        b.textContent = privacyEnabled ? 'Privacy On' : 'Privacy Off';
+        loadVideos(); // Privacy requires re-render for overlays
+    }
+
+    function isValidYouTubeUrl(url) {
+        return (url.match(/^https:\/\/(?:www\.)?youtube(?:-nocookie)?\.com\/(?:embed\/|watch\?v=|v\/|.+\/)([^#\&\?]*).*/) !== null);
+    }
+
+    function extractVideoId(url) {
+        const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^""&?\/\s]{11})/;
+        const match = url.match(regex);
+        return match ? match[1] : '';
+    }
+</script>
+
+<body>
+    <script src="../../topbar.js"></script>
 </body>
-</html>
