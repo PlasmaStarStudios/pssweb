@@ -123,19 +123,20 @@ const topbarTemplate = `
             <a href="#">Software ❯</a>
             <ul class="side-menu">
               <li><a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/Projects/software/incom">Incom (discontinued)</a></li>
-              <li><a href="#">psspocket(reconstruction)</a></li>
+              <li><a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/Projects/software/psspocket/">psspocket(reconstruction)</a></li>
             </ul>
           </li>
           <li class="has-submenu">
             <a href="#">Other ❯</a>
             <ul class="side-menu">
-              <li><a href="#">ADP</a></li>
+              <li><a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/Projects/Bots/adp/">ADP</a></li>
             </ul>
           </li>
         </ul>
       </li>
       <li><a href="#">Account</a></li> 
       <li><a href="#">🧺</a></li> 
+      <li><a herf="#">Version Beta 1.1.1</a></li>
     </ul>
   </nav>
 </header>
