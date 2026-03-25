@@ -71,6 +71,40 @@
         align-items: center;     /* Centers vertically */
         min-height: calc(100vh - 80px); /* Fill screen minus topbar height */
         width: 100%;
+        /*NEW LINES*/
+        /* Staff Login Button Styling */
+.staff-login-container {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+.staff-btn {
+    background: transparent;
+    border: 1px solid #444;
+    color: #888;
+    padding: 8px 15px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 0.75em;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.staff-btn:hover {
+    border-color: #722a9e;
+    color: #b366ff;
+    background: rgba(114, 42, 158, 0.1);
+}
+
+.staff-btn svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
     }
     </style>
 </head>
@@ -94,6 +128,13 @@
             <p id="message" class="message"></p>
             <p id="error" class="error"></p>
         </form>
+
+        <div class="staff-login-container">
+            <a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/Account/Staff/login/" class="staff-btn">
+                <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                Staff Login
+            </a>
+        </div>
     </div>
 
     <script>
