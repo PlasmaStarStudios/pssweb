@@ -187,7 +187,41 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
         const CURRENT_USER_ID = localStorage.getItem('CurrentLoggedInUSERID');
+        const tableIdentifier = localStorage.getItem('CurrentLoggedInUSERID');
+        const apiUrl = 'https://670968a0af1a3998baa16e22.mockapi.io/pspninf/inf';
         
+        if (!tableIdentifier || tableIdentifier === "null") {
+            const wrapper = document.getElementById('MainContentWrapper');
+            wrapper.innerHTML = `
+                <div class="error-container">
+                    <div class="error-header">⚠️ Error Message</div>
+                    <p style="color: #ccc;">failure Could not find logged in user ID</p>
+                    <p style="color: #888; font-size: 0.9em;">(This could be because you logged out recently)</p>
+                </div>
+            `;
+            // Stop further script execution
+            throw new Error("User not logged in.");
+        }
+
+        // --- 0. Account Info Logic ---
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const profileData = data.find(profile => profile.UserID === tableIdentifier);
+                if (profileData) {
+                    const profileInfo = `
+                        <p style="color: black;"><strong>UserName:</strong> ${profileData.ProfileName}</p>
+                        <p style="color: black;"><strong>Gender:</strong> ${profileData.Gender}</p>
+                        <p style="color: black;"><strong>Age:</strong> ${profileData.Age}</p>
+                        <p style="color: black;"><strong>Job:</strong> ${profileData.Job}</p>
+                        <p style="color: black;"><strong>Contact Email:</strong> ${profileData.contactemail}</p>
+                    `;
+                    document.getElementById('profile').innerHTML = profileInfo;
+                    initWorkAndAgenda(profileData);
+                    initMail(profileData.ProfileName);
+                }
+            });
+
         // --- Shared Logic for Job/Agenda/Mail ---
         async function initWorkAndAgenda() {
             try {
