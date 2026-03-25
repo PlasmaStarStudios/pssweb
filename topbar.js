@@ -1,4 +1,16 @@
+(function() {
+    // Check if a favicon already exists to avoid duplicates
+    if (!document.querySelector("link[rel*='icon']")) {
+        const link = document.createElement('link');
+        link.rel = 'icon';
+        link.type = 'image/png';
+        // USE THE FULL URL TO YOUR LOGO/ICON HERE
+        link.href = 'https://github.com/PlasmaStarStudios/pssweb/blob/main/icon.png?raw=true'; 
+        document.getElementsByTagName('head')[0].appendChild(link);
+    }
+})();
 const topbarTemplate = `
+
 <style>
   header {
     display: flex;
