@@ -11,7 +11,7 @@
         const link = document.createElement('link');
         link.rel = 'icon';
         link.type = 'image/png';
-        link.href = 'https://raw.githubusercontent.com/PlasmaStarStudios/pssweb/refs/heads/main/Devs.PN/logo.png'; 
+        link.href = 'https://github.com/PlasmaStarStudios/pssweb/blob/main/icon.png?raw=true'; 
         document.getElementsByTagName('head')[0].appendChild(link);
     }
 })();
