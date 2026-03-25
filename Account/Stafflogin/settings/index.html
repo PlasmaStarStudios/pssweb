@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Settings | PlasmaStarStudios</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background-color: #1a1a1a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: #262626;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+            border-left: 5px solid #722a9e;
+        }
+
+        h2 { color: #b366ff; margin-top: 0; font-size: 1.4em; border-bottom: 1px solid #444; padding-bottom: 10px; }
+        
+        form { display: flex; flex-direction: column; }
+        label { margin-top: 15px; font-size: 0.9em; color: #aaa; font-weight: bold; }
+
+        input {
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #1a1a1a;
+            color: white;
+            font-size: 1em;
+        }
+
+        .field-description { font-size: 0.8em; color: #777; margin-top: 4px; }
+
+        .save-btn, .reset-btn {
+            margin-top: 25px;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .save-btn { background-color: #722a9e; color: white; }
+        .reset-btn { background-color: #444; color: white; }
+        .save-btn:hover, .reset-btn:hover { opacity: 0.8; }
+
+        /* Warnings & Messages */
+        .field-warning {
+            display: flex;
+            align-items: center;
+            color: #ffb3b3;
+            font-size: 0.8em;
+            margin-top: 10px;
+            background-color: rgba(217, 83, 79, 0.1);
+            padding: 8px;
+            border-radius: 5px;
+        }
+        .field-warning svg { margin-right: 8px; width: 14px; height: 14px; fill: #d9534f; }
+        
+        #error, #errorMessage { color: #ff4d4d; font-size: 0.9em; margin-top: 10px; display: none; }
+        #confirmationMessage { color: #4CAF50; font-size: 0.9em; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>General Information</h2>
+        <form id="profileForm">
+            <label id="usernameLabel">Username:</label>
+            <input type="text" id="username" required>
+            <div id="usernameWarning" class="field-warning">
+                <svg viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm0 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1zM8 4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1 1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zM8 9a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1 1 1 0 0 0 1-1V10a1 1 0 0 0-1-1z"/></svg>
+                Changing this resets your corporate email!
+            </div>
+
+            <label id="genderLabel">Gender:</label>
+            <input type="text" id="gender" required>
+
+            <label id="ageLabel">Age:</label>
+            <input type="text" id="age" required>
+
+            <label id="contactemailLabel">Contact Email:</label>
+            <input type="email" id="contactemail" required>
+            <div class="field-description">For security alerts and panel updates.</div>
+
+            <button type="button" class="save-btn" onclick="saveProfile()">Update Profile</button>
+        </form>
+        <div id="error"></div>
+    </div>
+
+    <div class="container">
+        <h2>Security & Password</h2>
+        <form id="resetPasswordForm">
+            <label>Registered Staff Email:</label>
+            <input type="email" id="resetEmail" placeholder="Enter your staff email" required>
+            <div class="field-description">We will send a password reset link to this address.</div>
+            
+            <input type="submit" class="reset-btn" value="Send Reset Link">
+        </form>
+        <p id="confirmationMessage">Reset link sent! Check your inbox.</p>
+        <p id="errorMessage">Error: Email not found or network issue.</p>
+    </div>
+
+    <script>
+        // --- CONFIGURATIONS ---
+        const apiURL = 'https://670968a0af1a3998baa16e22.mockapi.io/pspninf/inf';
+        const userId = localStorage.getItem('CurrentLoggedInUSERID');
+
+        const securityConfig = {
+            apiKey: "AIzaSyAfQn4lqVPpFkd_QV2WBtphIRiMeOWltTU",
+            authDomain: "psspb-dd789.firebaseapp.com",
+            projectId: "psspb-dd789",
+            appId: "1:234369113802:web:884433b2eaac32b5bc9e33"
+        };
+
+        firebase.initializeApp(securityConfig);
+        const auth = firebase.auth();
+
+        // --- GENERAL INFO LOGIC ---
+        async function fetchProfile() {
+            try {
+                const response = await fetch(`${apiURL}?UserID=${userId}`);
+                const profiles = await response.json();
+                if (profiles.length > 0) {
+                    const p = profiles[0];
+                    document.getElementById('usernameLabel').innerText = `Username: ${p.ProfileName}`;
+                    document.getElementById('username').value = p.ProfileName;
+                    document.getElementById('gender').value = p.Gender;
+                    document.getElementById('age').value = p.Age;
+                    document.getElementById('contactemail').value = p.contactemail;
+                }
+            } catch (err) { console.error(err); }
+        }
+
+        async function saveProfile() {
+            try {
+                const response = await fetch(`${apiURL}?UserID=${userId}`);
+                const profiles = await response.json();
+                if (profiles.length > 0) {
+                    const data = {
+                        ProfileName: document.getElementById('username').value,
+                        Gender: document.getElementById('gender').value,
+                        Age: document.getElementById('age').value,
+                        contactemail: document.getElementById('contactemail').value
+                    };
+                    await fetch(`${apiURL}/${profiles[0].id}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    alert("Profile Saved!");
+                    location.reload();
+                }
+            } catch (err) { alert("Error saving profile"); }
+        }
+
+        // --- SECURITY LOGIC ---
+        document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('resetEmail').value;
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    document.getElementById('confirmationMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
+                })
+                .catch(() => {
+                    document.getElementById('errorMessage').style.display = 'block';
+                    document.getElementById('confirmationMessage').style.display = 'none';
+                });
+        });
+
+        fetchProfile();
+    </script>
+    <script src="../../../topbar.js"></script>
+</body>
+</html>
