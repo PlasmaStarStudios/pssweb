@@ -3,83 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
+    <title>Account Settings | PlasmaStarStudios</title>
     <style>
-        /* Ensuring no conflicting background color */
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background-color: #202020 !important; /* Your preferred background color */
+        :root {
+            --accent: #b366ff;
+            --bg-dark: #1a1a1a;
+            --container-bg: #262626;
+            --input-bg: #333;
+            --text-main: #ffffff;
+            --text-dim: #aaa;
         }
 
         body {
-            font-family: Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
         }
 
         .container {
-            display: flex;
-            flex-direction: column;
-            width: 400px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            background-color: white;
+            background-color: var(--container-bg);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-left: 5px solid #722a9e;
         }
 
-        form {
-            display: flex;
-            flex-direction: column;
+        h2 {
+            margin-top: 0;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.2em;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
         }
 
         label {
-            margin-top: 10px;
+            display: block;
+            font-size: 0.85em;
+            font-weight: bold;
+            color: var(--accent);
+            margin-bottom: 8px;
         }
 
         input {
-            padding: 8px;
-            margin-top: 5px;
-            font-size: 1em;
-        }
-
-        .save-btn {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #4CAF50;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--input-bg);
+            border: 1px solid #444;
+            border-radius: 6px;
             color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.2s;
         }
 
-        .error-message {
-            color: red;
-            margin-top: 10px;
+        input:focus {
+            border-color: var(--accent);
         }
 
         .field-description {
-            color: red;
-            font-size: 0.9em;
+            font-size: 0.75em;
+            color: var(--text-dim);
             margin-top: 5px;
         }
 
+        /* The Email Warning Box */
         .field-warning {
             display: flex;
-            align-items: center;
-            color: #d9534f;
-            font-size: 0.85em;
-            margin-top: 5px;
-            font-weight: bold;
-            background-color: #f8d7da;
-            padding: 8px;
-            border-left: 5px solid #d9534f;
-            border-radius: 5px;
+            align-items: flex-start;
+            color: #ffcccc;
+            font-size: 0.75em;
+            margin-top: 10px;
+            background-color: rgba(217, 83, 79, 0.15);
+            padding: 10px;
+            border-left: 3px solid #d9534f;
+            border-radius: 4px;
+            line-height: 1.4;
         }
 
         .field-warning svg {
@@ -87,108 +100,132 @@
             width: 16px;
             height: 16px;
             fill: #d9534f;
+            flex-shrink: 0;
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #722a9e;
+            color: white;
+            border: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 6px;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .save-btn:hover {
+            background-color: #8c3bc7;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85em;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        #status-msg {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.85em;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <h2>Account Settings</h2>
+    
     <form id="profileForm">
-        <label id="usernameLabel">Username:</label>
-        <input type="text" id="username" name="username" autocomplete="username" required>
-        <div class="field-description">Enter your username. Make it unique.</div>
-
-        <label id="genderLabel">Gender:</label>
-        <input type="text" id="gender" name="gender" autocomplete="gender" required>
-        <div class="field-description">Specify your gender (e.g., Male, Female, Other).</div>
-
-        <label id="ageLabel">Age:</label>
-        <input type="text" id="age" name="age" autocomplete="age" required>
-        <div class="field-description">Enter your age (must be a number).</div>
-
-        <label id="contactemailLabel">Contact Email:</label>
-        <input type="email" id="contactemail" name="contactemail" autocomplete="email" required>
-        <div class="field-description">Provide your contact email.</div>
-        <div id="contactemailWarning" class="field-warning">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm0 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1zM8 4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1 1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zM8 9a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1 1 1 0 0 0 1-1V10a1 1 0 0 0-1-1z"/></svg>
-            Warning: this is the email where you will be notified about security alerts, password changes, and more! - make sure you enter a valid one
+        <div class="form-group">
+            <label id="usernameLabel">Username</label>
+            <input type="text" id="username" required>
+            <div class="field-description">Your unique display name.</div>
         </div>
 
-        <button type="button" class="save-btn" onclick="saveProfile()">Save</button>
+        <div class="form-group">
+            <label id="genderLabel">Gender</label>
+            <input type="text" id="gender" required>
+        </div>
+
+        <div class="form-group">
+            <label id="ageLabel">Age</label>
+            <input type="number" id="age" required>
+        </div>
+
+        <div class="form-group">
+            <label id="contactemailLabel">Contact Email</label>
+            <input type="email" id="contactemail" required>
+            <div id="contactemailWarning" class="field-warning">
+                <svg viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm0 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1zM8 4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1 1 1 0 0 0 1-1V5a1 1 0 0 0-1-1zM8 9a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1 1 1 0 0 0 1-1V10a1 1 0 0 0-1-1z"/></svg>
+                This email receives security alerts and subscription updates. Ensure it is valid.
+            </div>
+        </div>
+
+        <button type="button" class="save-btn" id="saveBtn" onclick="saveProfile()">Save Changes</button>
     </form>
-    <div id="error" class="error-message"></div>
+    
+    <div id="status-msg"></div>
+    <a href="javascript:history.back()" class="back-link">← Return to Dashboard</a>
 </div>
 
 <script>
     const apiURL = 'https://670968a0af1a3998baa16e22.mockapi.io/pspninf/personalaccounts';
-    const userId = localStorage.getItem('CurrentLoggedInUSERID'); // Get from localStorage
-    const errorDiv = document.getElementById('error');
+    const userId = localStorage.getItem('CurrentLoggedInUSERID');
+    const statusMsg = document.getElementById('status-msg');
 
-    // Fetch profile details on page load
     async function fetchProfile() {
-        try {
-            console.log(`Fetching profile for UserID: ${userId}`);
-            const response = await fetch(`${apiURL}?UserID=${userId}`);
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        if (!userId) {
+            statusMsg.innerHTML = "<span style='color:red'>Error: Not Logged In</span>";
+            return;
+        }
 
+        try {
+            const response = await fetch(`${apiURL}?UserID=${userId}`);
             const profiles = await response.json();
-            console.log('Fetched profiles:', profiles); // Log the fetched profiles
 
             if (profiles.length > 0) {
-                const profile = profiles[0]; // Get the first profile
-                // Set the input values and update labels
-                document.getElementById('usernameLabel').innerText = `Username: ${profile.ProfileName || ''}`;
-                document.getElementById('genderLabel').innerText = `Gender: ${profile.Gender || ''}`;
-                document.getElementById('ageLabel').innerText = `Age: ${profile.Age || ''}`;
-                document.getElementById('contactemailLabel').innerText = `Contact Email: ${profile.contactemail || ''}`;
+                const profile = profiles[0];
                 
-                // Set values in the input fields
-                document.getElementById('username').value = profile.ProfileName || '';
-                document.getElementById('gender').value = profile.Gender || '';
-                document.getElementById('age').value = profile.Age || '';
-                document.getElementById('contactemail').value = profile.contactemail || '';
-            } else {
-                console.log('No profile found, creating a new one.');
-                createProfile(); // No profile found, create a new one
+                // Update Labels
+                document.getElementById('usernameLabel').innerText = `Username: ${profile.ProfileName}`;
+                document.getElementById('genderLabel').innerText = `Gender: ${profile.Gender}`;
+                document.getElementById('ageLabel').innerText = `Age: ${profile.Age}`;
+                document.getElementById('contactemailLabel').innerText = `Email: ${profile.contactemail}`;
+
+                // Fill Inputs
+                document.getElementById('username').value = profile.ProfileName;
+                document.getElementById('gender').value = profile.Gender;
+                document.getElementById('age').value = profile.Age;
+                document.getElementById('contactemail').value = profile.contactemail;
             }
         } catch (error) {
-            displayError(error.message);
+            statusMsg.innerHTML = "<span style='color:red'>Sync Error</span>";
         }
     }
 
-    // Create a new profile if it doesn't exist
-    async function createProfile() {
-        const profileData = {
-            UserID: userId,
-            ProfileName: 'New User',
-            Gender: '',
-            Age: '',
-            contactemail: ''  // Add empty contactemail field
-        };
-
-        try {
-            const response = await fetch(apiURL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(profileData),
-            });
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-            console.log('New profile created:', profileData);
-            fetchProfile(); // Fetch the newly created profile
-        } catch (error) {
-            displayError(error.message);
-        }
-    }
-
-    // Save profile details
     async function saveProfile() {
+        const btn = document.getElementById('saveBtn');
+        btn.disabled = true;
+        btn.innerText = "Saving...";
+        statusMsg.innerText = "";
+
         try {
             const response = await fetch(`${apiURL}?UserID=${userId}`);
-            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
             const profiles = await response.json();
 
             if (profiles.length > 0) {
-                const profileId = profiles[0].id; // Get the ID of the profile
+                const profileId = profiles[0].id;
                 const profileData = {
                     ProfileName: document.getElementById('username').value,
                     Gender: document.getElementById('gender').value,
@@ -202,25 +239,21 @@
                     body: JSON.stringify(profileData),
                 });
 
-                if (!updateResponse.ok) throw new Error(`HTTP error! Status: ${updateResponse.status}`);
-                console.log('Profile updated successfully');
-            } else {
-                displayError('Profile not found.');
+                if (updateResponse.ok) {
+                    statusMsg.innerHTML = "<span style='color:#4CAF50'>Profile updated successfully!</span>";
+                    fetchProfile(); // Refresh labels
+                }
             }
         } catch (error) {
-            displayError(error.message);
+            statusMsg.innerHTML = "<span style='color:red'>Failed to save.</span>";
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Save Changes";
         }
     }
 
-    // Display error message
-    function displayError(message) {
-        errorDiv.innerText = `Error: ${message}`;
-        errorDiv.style.display = 'block';
-    }
-
-    // On page load, fetch the profile
     fetchProfile();
 </script>
-    <script src="../../../topbar.js"></script>
+
 </body>
 </html>
