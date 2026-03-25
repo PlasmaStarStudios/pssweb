@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set New Password | PlasmaStarStudios</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+            color: white;
+        }
+        
+        .reset-container {
+            background-color: #262626;
+            padding: 40px;
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 350px;
+            border-left: 5px solid #722a9e;
+        }
+
+        h2 { 
+            color: #b366ff; 
+            margin-top: 0; 
+            font-size: 1.6em;
+            letter-spacing: 1px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: #aaa;
+        }
+
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background: #1a1a1a;
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        input[type="password"]:focus {
+            border-color: #722a9e;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #722a9e;
+            border: none;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #8e3bc4;
+        }
+
+        #message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.85em;
+            display: none;
+            background: rgba(255, 77, 77, 0.1);
+            color: #ff4d4d;
+            border-left: 3px solid #ff4d4d;
+        }
+
+        .hint {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="reset-container">
+        <form id="newPasswordForm">
+            <h2>Secure Account</h2>
+            <p class="hint">Enter a strong password to regain access.</p>
+            
+            <label for="password">New Password</label>
+            <input type="password" id="password" placeholder="••••••••" required>
+            
+            <input type="submit" value="Update Password">
+            <p id="message"></p>
+        </form>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAfQn4lqVPpFkd_QV2WBtphIRiMeOWltTU",
+            authDomain: "psspb-dd789.firebaseapp.com",
+            projectId: "psspb-dd789",
+            storageBucket: "psspb-dd789.firebasestorage.app",
+            messagingSenderId: "234369113802",
+            appId: "1:234369113802:web:884433b2eaac32b5bc9e33"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const oobCode = urlParams.get('oobCode');
+        const msgBox = document.getElementById('message');
+
+        if (!oobCode) {
+            msgBox.innerText = "Error: This link is invalid or has expired.";
+            msgBox.style.display = "block";
+            document.querySelector('input[type="submit"]').disabled = true;
+            document.querySelector('input[type="submit"]').style.opacity = "0.5";
+        }
+
+        document.getElementById('newPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newPassword = document.getElementById('password').value;
+
+            auth.confirmPasswordReset(oobCode, newPassword)
+                .then(() => {
+                    alert("Security updated. Please log in with your new credentials.");
+                    window.location.href = "../login/"; // Update this to your actual login path
+                })
+                .catch(error => {
+                    msgBox.innerText = error.message;
+                    msgBox.style.display = "block";
+                });
+        });
+    </script>
+</body>
+</html>
