@@ -108,7 +108,7 @@
     <div id="topbar-placeholder"></div>
     <script src="../../topbar.js"></script>
 
-    <div class="content-wrapper">
+    <div class="content-wrapper" id="MainContentWrapper">
 
         <div id="auth-status-check"></div>
         
@@ -190,7 +190,7 @@
         const tableIdentifier = localStorage.getItem('CurrentLoggedInUSERID');
         const apiUrl = 'https://670968a0af1a3998baa16e22.mockapi.io/pspninf/inf';
         
-        if (!tableIdentifier || tableIdentifier === "null") {
+        if (!tableIdentifier || tableIdentifier === "nul") {
             const wrapper = document.getElementById('MainContentWrapper');
             wrapper.innerHTML = `
                 <div class="error-container">
