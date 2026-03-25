@@ -14,6 +14,25 @@
             margin: 40px auto;
             padding: 20px;
         }
+
+        /* Error Container Styling */
+        .error-container {
+            background-color: #262626;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-left: 5px solid #c0392b; /* Red accent for errors */
+        }
+        .error-header {
+            color: #ff4d4d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
         /* Settings Link Styling */
         .settings-link-container {
             text-align: right;
@@ -91,6 +110,8 @@
 
     <div class="content-wrapper">
 
+        <div id="auth-status-check"></div>
+        
         <div class="settings-link-container">
             <a href="https://example.com">Settings ⚙️</a>
         </div>
