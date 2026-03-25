@@ -104,37 +104,37 @@ const topbarTemplate = `
 
 <header>
   <div class="logo">
-  <img src="https://raw.githubusercontent.com/PlasmaStarStudios/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/refs/heads/main/Devs.PN/logo.png" alt="PSSLOGOEXPANDABLE">
+  <img src="https://raw.githubusercontent.com/PlasmaStarStudios/pssweb/refs/heads/main/Devs.PN/logo.png" alt="PSSLOGOEXPANDABLE">
   </div>
   <nav>
     <ul>
-      <li><a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/index.html">Home</a></li>
+      <li><a href="https://plasmastarstudios.github.io/pssweb/index.html">Home</a></li>
       <li>
         <a href="#">Projects</a>
         <ul class="dropdown">
           <li class="has-submenu">
             <a href="#">Games ❯</a>
             <ul class="side-menu">
-              <li><a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/Projects/games/iifpp/">IIFPP (BETA)</a></li>
-              <li><a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/Projects/games/rrp/">RRP</a></li>
+              <li><a href="https://plasmastarstudios.github.io/pssweb/Projects/games/iifpp/">IIFPP (BETA)</a></li>
+              <li><a href="https://plasmastarstudios.github.io/pssweb/Projects/games/rrp/">RRP</a></li>
             </ul>
           </li>
           <li class="has-submenu">
             <a href="#">Software ❯</a>
             <ul class="side-menu">
-              <li><a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/Projects/software/incom">Incom (discontinued)</a></li>
-              <li><a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/Projects/software/psspocket/">psspocket(reconstruction)</a></li>
+              <li><a href="https://plasmastarstudios.github.io/pssweb/Projects/software/incom">Incom (discontinued)</a></li>
+              <li><a href="https://plasmastarstudios.github.io/pssweb/Projects/software/psspocket/">psspocket(reconstruction)</a></li>
             </ul>
           </li>
           <li class="has-submenu">
             <a href="#">Other ❯</a>
             <ul class="side-menu">
-              <li><a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/Projects/Bots/adp/">ADP</a></li>
+              <li><a href="https://plasmastarstudios.github.io/pssweb/Projects/Bots/adp/">ADP</a></li>
             </ul>
           </li>
         </ul>
       </li>
-      <li><a href="https://plasmastarstudios.github.io/gawioghsaioghwaihfiohowiahgoiawrtioasygajklbnmz-nfklahwgioahiosygiouy9201571285-512895172895-857pss/Account/Consumer/login/">Account</a></li> 
+      <li><a href="https://plasmastarstudios.github.io/pssweb/Account/Consumer/login/">Account</a></li> 
       <li><a href="#">🧺</a></li> 
       <li><a herf="#">Version Beta 1.1.11</a></li>
     </ul>
