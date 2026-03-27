@@ -186,43 +186,57 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        const wrapper = document.getElementById('MainContentWrapper');
         const CURRENT_USER_ID = localStorage.getItem('CurrentLoggedInUSERID');
         const tableIdentifier = localStorage.getItem('CurrentLoggedInUSERID');
         const apiUrl = 'https://670968a0af1a3998baa16e22.mockapi.io/pspninf/inf';
         
-        firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        // User is logged in, now check if they are banned or valid
-        user.getIdToken(true).then(() => {
-            // SUCCESS: Start the page using the Firebase UID
-            startStaffPanel(user.uid);
-        }).catch((error) => {
-            if (error.code === 'auth/user-disabled') {
-                showError("ACCOUNT BANNED", "Your access has been revoked.", "c0392b");
-            } else {
-                showError("ACCOUNT FETCH ERROR", "failure Could not verify user status.", "d35400");
-            }
-        });
-    } else {
-        // NO USER: Show your original error message
-        showError("⚠️ Error Message", "failure Could not find logged in user ID", "c0392b");
+        // --- Updated Security Check using Firebase ---
+firebase.auth().onAuthStateChanged((user) => {
+    const wrapper = document.getElementById('MainContentWrapper');
+
+    // 1. Check: Is the user logged in at all?
+    if (!user) {
+        wrapper.innerHTML = `
+            <div class="error-container">
+                <div class="error-header">⚠️ Error Message</div>
+                <p style="color: #ccc;">failure (account logged out)</p>
+                <p style="color: #888; font-size: 0.9em;">(This could be because you logged out recently)</p>
+            </div>
+        `;
+        throw new Error("User logged out.");
     }
+
+    // 2. Check: Is the account valid or banned?
+    user.getIdToken(true)
+        .then(() => {
+            // SUCCESS: Account is valid. Proceed to load the page.
+            console.log("Auth verified: " + user.uid);
+            runDashboard(user.uid); 
+        })
+        .catch((error) => {
+            let errorTitle = "⚠️ Error Message";
+            let errorMsg = "failure (account fetch error)";
+
+            if (error.code === 'auth/user-disabled') {
+                errorTitle = "🚫 ACCESS REVOKED";
+                errorMsg = "failure (account banned)";
+            }
+
+            wrapper.innerHTML = `
+                <div class="error-container" style="border-left-color: #c0392b;">
+                    <div class="error-header">${errorTitle}</div>
+                    <p style="color: #ccc;">${errorMsg}</p>
+                    <p style="color: #888; font-size: 0.9em;">Please contact administration if you believe this is a mistake.</p>
+                </div>
+            `;
+            throw new Error(errorMsg);
+        });
 });
 
-// --- 3. ERROR DISPLAY HELPER ---
-function showError(header, msg, color) {
-    wrapper.innerHTML = `
-        <div class="error-container" style="border-left-color: #${color}">
-            <div class="error-header">${header}</div>
-            <p style="color: #ccc;">${msg}</p>
-            <p style="color: #888; font-size: 0.9em;">(This could be because you logged out recently or were restricted)</p>
-            <a href="../login/" style="color: #b366ff; text-decoration: none; font-weight: bold;">Return to Login →</a>
-        </div>
-    `;
-}
-
-        // --- 0. Account Info Logic ---
+// Move all your existing logic (Fetch Profile, etc.) into this function
+function runDashboard(tableIdentifier) {
+    // Paste all your original code starting from: fetch(apiUrl)... here
+    // --- 0. Account Info Logic ---
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
@@ -481,6 +495,9 @@ function showError(header, msg, color) {
             initMail();
             // loadVideos();
         };
+}
+
+        
     </script>
 </body>
 </html>
