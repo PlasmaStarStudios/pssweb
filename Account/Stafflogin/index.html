@@ -186,22 +186,41 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
+        const wrapper = document.getElementById('MainContentWrapper');
         const CURRENT_USER_ID = localStorage.getItem('CurrentLoggedInUSERID');
         const tableIdentifier = localStorage.getItem('CurrentLoggedInUSERID');
         const apiUrl = 'https://670968a0af1a3998baa16e22.mockapi.io/pspninf/inf';
         
-        if (!tableIdentifier || tableIdentifier === "nul") {
-            const wrapper = document.getElementById('MainContentWrapper');
-            wrapper.innerHTML = `
-                <div class="error-container">
-                    <div class="error-header">⚠️ Error Message</div>
-                    <p style="color: #ccc;">failure Could not find logged in user ID</p>
-                    <p style="color: #888; font-size: 0.9em;">(This could be because you logged out recently)</p>
-                </div>
-            `;
-            // Stop further script execution
-            throw new Error("User not logged in.");
-        }
+        firebase.auth().onAuthStateChanged((user) => {
+    if (user) {
+        // User is logged in, now check if they are banned or valid
+        user.getIdToken(true).then(() => {
+            // SUCCESS: Start the page using the Firebase UID
+            startStaffPanel(user.uid);
+        }).catch((error) => {
+            if (error.code === 'auth/user-disabled') {
+                showError("ACCOUNT BANNED", "Your access has been revoked.", "c0392b");
+            } else {
+                showError("ACCOUNT FETCH ERROR", "failure Could not verify user status.", "d35400");
+            }
+        });
+    } else {
+        // NO USER: Show your original error message
+        showError("⚠️ Error Message", "failure Could not find logged in user ID", "c0392b");
+    }
+});
+
+// --- 3. ERROR DISPLAY HELPER ---
+function showError(header, msg, color) {
+    wrapper.innerHTML = `
+        <div class="error-container" style="border-left-color: #${color}">
+            <div class="error-header">${header}</div>
+            <p style="color: #ccc;">${msg}</p>
+            <p style="color: #888; font-size: 0.9em;">(This could be because you logged out recently or were restricted)</p>
+            <a href="../login/" style="color: #b366ff; text-decoration: none; font-weight: bold;">Return to Login →</a>
+        </div>
+    `;
+}
 
         // --- 0. Account Info Logic ---
         fetch(apiUrl)
