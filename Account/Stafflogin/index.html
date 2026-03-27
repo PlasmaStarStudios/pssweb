@@ -190,53 +190,20 @@
         const tableIdentifier = localStorage.getItem('CurrentLoggedInUSERID');
         const apiUrl = 'https://670968a0af1a3998baa16e22.mockapi.io/pspninf/inf';
         
-        // --- Updated Security Check using Firebase ---
-firebase.auth().onAuthStateChanged((user) => {
-    const wrapper = document.getElementById('MainContentWrapper');
-
-    // 1. Check: Is the user logged in at all?
-    if (!user) {
-        wrapper.innerHTML = `
-            <div class="error-container">
-                <div class="error-header">⚠️ Error Message</div>
-                <p style="color: #ccc;">failure (account logged out)</p>
-                <p style="color: #888; font-size: 0.9em;">(This could be because you logged out recently)</p>
-            </div>
-        `;
-        throw new Error("User logged out.");
-    }
-
-    // 2. Check: Is the account valid or banned?
-    user.getIdToken(true)
-        .then(() => {
-            // SUCCESS: Account is valid. Proceed to load the page.
-            console.log("Auth verified: " + user.uid);
-            runDashboard(user.uid); 
-        })
-        .catch((error) => {
-            let errorTitle = "⚠️ Error Message";
-            let errorMsg = "failure (account fetch error)";
-
-            if (error.code === 'auth/user-disabled') {
-                errorTitle = "🚫 ACCESS REVOKED";
-                errorMsg = "failure (account banned)";
-            }
-
+        if (!tableIdentifier || tableIdentifier === "nul") {
+            const wrapper = document.getElementById('MainContentWrapper');
             wrapper.innerHTML = `
-                <div class="error-container" style="border-left-color: #c0392b;">
-                    <div class="error-header">${errorTitle}</div>
-                    <p style="color: #ccc;">${errorMsg}</p>
-                    <p style="color: #888; font-size: 0.9em;">Please contact administration if you believe this is a mistake.</p>
+                <div class="error-container">
+                    <div class="error-header">⚠️ Error Message</div>
+                    <p style="color: #ccc;">failure Could not find logged in user ID</p>
+                    <p style="color: #888; font-size: 0.9em;">(This could be because you logged out recently)</p>
                 </div>
             `;
-            throw new Error(errorMsg);
-        });
-});
+            // Stop further script execution
+            throw new Error("User not logged in.");
+        }
 
-// Move all your existing logic (Fetch Profile, etc.) into this function
-function runDashboard(tableIdentifier) {
-    // Paste all your original code starting from: fetch(apiUrl)... here
-    // --- 0. Account Info Logic ---
+        // --- 0. Account Info Logic ---
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
@@ -495,9 +462,6 @@ function runDashboard(tableIdentifier) {
             initMail();
             // loadVideos();
         };
-}
-
-        
     </script>
 </body>
 </html>
