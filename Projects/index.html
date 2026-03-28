@@ -31,6 +31,38 @@
             min-height: 600px;         /* Taller default height */
         }
 
+        .card-container {
+        display: flex;          /* This puts cards in a row */
+        flex-wrap: wrap;       /* This lets cards drop to the next line if room runs out */
+        gap: 20px;             /* Space between the cards */
+        justify-content: center; /* Centers the gallery on the page */
+        padding: 20px;
+        }
+
+        /* The Individual Card */
+        .card {
+        width: 300px;
+        border-radius: 10px;
+        overflow: hidden;      /* Keeps the image corners rounded */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        background-color: #fff;
+        transition: 0.3s;      /* Smooth hover effect */
+        }
+
+        .card:hover {
+        transform: translateY(-5px); /* Lifts the card up slightly */
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        .card img {
+        width: 100%;           /* Makes image fit the card width */
+        height: auto;
+        }
+
+        .card-content {
+        padding: 15px;
+        }
+
         h1 { color: #b366ff; margin-top: 0; font-size: 2.5em; }
         p { color: #cccccc; font-size: 1.2em; line-height: 1.6; }
     </style>
@@ -41,8 +73,18 @@
 
     <div class="content-wrapper">
         <div class="main-box">
-            <h1>Legacy Portal</h1>
-            <p>This container is now optimized for wide-screen viewing while staying centered.</p>
+            <h1>Games</h1>
+            <div class="card-container">
+                <div class="card">
+                    <img src="https://via.placeholder.com/300x200" alt="Card Image">
+                    <div class="card-content">
+                    <h3>Cool Title</h3>
+                    <p>This is a short description of what this card is all about.</p>
+                    </div>
+                </div>
+
+                <div class="card">...</div>
+                <div class="card">...</div>
             </div>
     </div>
 
