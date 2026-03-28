@@ -111,6 +111,113 @@ const topbarTemplate = `
     min-width: 160px;
   }
 
+  .menu-toggle {
+    display: none;
+    background: #fff;
+    border: 2px solid #fff;
+    color: #722a9e;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .menu-toggle:focus {
+    outline: 2px dashed #fff;
+  }
+
+  nav.open > ul {
+    display: flex !important;
+    max-height: 800px;
+  }
+
+  @media (max-width: 860px) {
+    header {
+      flex-wrap: wrap;
+      padding: 8px 12px;
+    }
+
+    .logo img {
+      height: 50px;
+    }
+
+    .menu-toggle {
+      display: flex;
+    }
+
+    nav {
+      width: 100%;
+    }
+
+    nav ul {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      gap: 8px;
+      background-color: #722a9e;
+      margin: 0;
+      padding: 8px 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    nav.open > ul {
+      max-height: 600px;
+    }
+
+    nav ul li {
+      width: 100%;
+      margin: 0;
+    }
+
+    nav ul li a {
+      width: calc(100% - 40px);
+      margin: 0 20px;
+      text-align: center;
+      border: 1px solid #fff;
+      padding: 10px 12px;
+    }
+
+    .dropdown, .side-menu {
+      position: relative;
+      top: 0;
+      right: 0;
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      background-color: #8b41c2;
+      box-shadow: none;
+      transform: none;
+      opacity: 1;
+      visibility: visible;
+      width: 100%;
+      border-top: none;
+      display: none;
+    }
+
+    .dropdown li,
+    .side-menu li {
+      width: 100%;
+    }
+
+    .has-submenu.open > .side-menu,
+    .has-dropdown.open > .dropdown {
+      display: flex;
+    }
+
+    .has-submenu > a::after,
+    .has-dropdown > a::after {
+      content: " ▾";
+      font-size: 0.8em;
+      margin-left: 6px;
+    }
+  }
+
   a:focus { outline: none; }
 </style>
 
@@ -118,6 +225,7 @@ const topbarTemplate = `
   <div class="logo">
   <img src="https://raw.githubusercontent.com/PlasmaStarStudios/pssweb/refs/heads/main/Devs.PN/logo.png" alt="PSSLOGOEXPANDABLE">
   </div>
+  <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
   <nav>
     <ul>
       <li><a href="https://plasmastarstudios.github.io/pssweb/index.html">Home</a></li>
@@ -148,7 +256,7 @@ const topbarTemplate = `
       </li>
       <li><a href="https://plasmastarstudios.github.io/pssweb/Account/Consumer/login/">Account</a></li> 
       <li><a href="#">🧺</a></li> 
-      <li><a herf="#">Version Beta 1.1.12</a></li>
+      <li><a href="#">Version Beta 1.1.12</a></li>
     </ul>
   </nav>
 </header>
@@ -156,3 +264,25 @@ const topbarTemplate = `
 
 // This line "injects" the code into the top of your body
 document.body.insertAdjacentHTML('afterbegin', topbarTemplate);
+
+const topbarNav = document.querySelector('header nav');
+const menuToggle = document.querySelector('.menu-toggle');
+
+if (menuToggle && topbarNav) {
+  menuToggle.addEventListener('click', () => {
+    const expanded = topbarNav.classList.toggle('open');
+    menuToggle.setAttribute('aria-expanded', expanded);
+  });
+}
+
+const submenuTriggers = document.querySelectorAll('li.has-submenu > a');
+submenuTriggers.forEach(trigger => {
+  trigger.addEventListener('click', (event) => {
+    const isMobile = window.matchMedia('(max-width: 860px)').matches;
+    if (!isMobile) return;
+
+    event.preventDefault();
+    const parentLi = trigger.parentElement;
+    parentLi.classList.toggle('open');
+  });
+});
