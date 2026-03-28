@@ -296,21 +296,14 @@ if (menuToggle && topbarNav) {
   });
 }
 
-const submenuTriggers = document.querySelectorAll('li.has-submenu > a, li.has-dropdown > a');
+const submenuTriggers = document.querySelectorAll('li.has-submenu > a');
 submenuTriggers.forEach(trigger => {
   trigger.addEventListener('click', (event) => {
     const isMobile = window.matchMedia('(max-width: 860px)').matches;
     if (!isMobile) return;
 
     event.preventDefault();
-    event.stopPropagation();
     const parentLi = trigger.parentElement;
     parentLi.classList.toggle('open');
-
-    // Ensure the parent menu is open when submenu is expanded
-    if (topbarNav && !topbarNav.classList.contains('open')) {
-      topbarNav.classList.add('open');
-      menuToggle.setAttribute('aria-expanded', 'true');
-    }
   });
 });
