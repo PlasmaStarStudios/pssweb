@@ -1,16 +1,4 @@
-(function() {
-    // Check if a favicon already exists to avoid duplicates
-    if (!document.querySelector("link[rel*='icon']")) {
-        const link = document.createElement('link');
-        link.rel = 'icon';
-        link.type = 'image/png';
-        // USE THE FULL URL TO YOUR LOGO/ICON HERE
-        link.href = 'https://github.com/PlasmaStarStudios/pssweb/blob/main/icon.png?raw=true'; 
-        document.getElementsByTagName('head')[0].appendChild(link);
-    }
-})();
 const topbarTemplate = `
-
 <style>
   header {
     display: flex;
@@ -18,111 +6,120 @@ const topbarTemplate = `
     align-items: center;
     padding: 10px 20px;
     background-color: #722a9e;
+    min-height: 100px;
+    position: relative;
+    z-index: 1000;
   }
 
-  body {
-    margin: 0;
-    font-family: "Calibri", "Candara", "Segoe UI", "Optima", "Arial", sans-serif;
-  }
+  body { margin: 0; font-family: "Segoe UI", sans-serif; }
+
+  .logo img { height: 90px; width: auto; }
 
   nav ul {
     display: flex;
     list-style: none;
-    gap: 20px;
+    gap: 15px;
+    margin: 0;
+    padding: 0;
+    align-items: center;
   }
 
-  .logo img {
-    height: 110px;
-    width: auto;
-  }
-
+  /* RESTORED: Original Button Styling with Borders */
   nav ul li a {
     text-decoration: none;
     color: #ffffff;
-    background-color: transparent; 
-    border: 2px solid #ffffff;
+    background-color: transparent;
+    border: 2px solid #ffffff; /* The classic border */
     padding: 8px 18px;
     border-radius: 5px;
     font-weight: bold;
+    font-size: 14px;
+    white-space: nowrap;
     display: inline-block;
     transition: 0.3s;
   }
 
+  nav ul li a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
   nav ul li { position: relative; }
 
+  /* --- DROPDOWNS (Level 1) --- */
   .dropdown {
     visibility: hidden;
     opacity: 0;
-    transition: opacity 0.4s ease, transform 0.4s ease;
-    transform: translateY(-10px);
     position: absolute;
     top: 100%;
     right: 0;
     background-color: #722a9e;
     padding: 10px;
-    list-style: none;
+    list-index: 100;
+    display: flex;
     flex-direction: column;
-    z-index: 100;
     border-radius: 0 0 5px 5px;
-    border-top: 20px solid #722a9e;
-    margin-top: -1px;
-    width: max-content;
+    border-top: 15px solid transparent; /* Buffer for easier hovering */
+    transition: 0.3s ease;
   }
 
+  /* --- SIDE MENUS (Level 2) --- */
   .side-menu {
     visibility: hidden;
     opacity: 0;
-    transition: opacity 0.4s ease, transform 0.4s ease;
-    transform: translateX(10px);
     position: absolute;
     top: 0;
     right: 100%;
     background-color: #8732bb;
     padding: 10px;
-    list-style: none;
+    display: flex;
     flex-direction: column;
-    z-index: 101;
     border-radius: 5px 0 0 5px;
-    border-right: 30px solid #722a9e;
-    margin-right: -40px;
-    width: max-content;
+    border-right: 10px solid transparent; /* Buffer */
+    transition: 0.3s ease;
   }
 
+  /* HOVER TRIGGERS */
   nav ul li:hover > .dropdown,
   .has-submenu:hover > .side-menu {
     visibility: visible;
     opacity: 1;
-    transform: translate(0);
-    display: flex;
   }
 
-  nav ul li a { outline: none; }
-
-  .dropdown li, .side-menu li {
-    width: 100%;
-    display: block;
-  }
-
+  /* Dropdown buttons shouldn't have double borders */
   .dropdown li a, .side-menu li a {
-    display: block;
-    box-sizing: border-box;
-    margin: 4px 0;
+    border: 1px solid rgba(255,255,255,0.3);
+    width: 170px;
     text-align: center;
-    min-width: 160px;
+    margin: 4px 0;
   }
 
-  a:focus { outline: none; }
+  /* --- RESPONSIVE FIXES --- */
+  @media (max-width: 900px) {
+    header { padding: 10px; min-height: 80px; }
+    .logo img { height: 60px; }
+    
+    nav {
+      overflow-x: auto;
+      max-width: 75%;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    nav ul { gap: 8px; padding-bottom: 5px; }
+    nav ul li a { padding: 6px 12px; font-size: 12px; }
+    
+    .dropdown { right: auto; left: -50px; }
+  }
 </style>
 
 <header>
   <div class="logo">
-  <img src="https://raw.githubusercontent.com/PlasmaStarStudios/pssweb/refs/heads/main/Devs.PN/logo.png" alt="PSSLOGOEXPANDABLE">
+    <img src="https://raw.githubusercontent.com/PlasmaStarStudios/pssweb/refs/heads/main/Devs.PN/logo.png" alt="PSS">
   </div>
   <nav>
     <ul>
       <li><a href="https://plasmastarstudios.github.io/pssweb/index.html">Home</a></li>
       <li>
-        <a href="#">Projects</a>
+        <a href="#">Projects ▾</a>
         <ul class="dropdown">
           <li class="has-submenu">
             <a href="#">Games ❯</a>
@@ -134,8 +131,8 @@ const topbarTemplate = `
           <li class="has-submenu">
             <a href="#">Software ❯</a>
             <ul class="side-menu">
-              <li><a href="https://plasmastarstudios.github.io/pssweb/Projects/software/incom">Incom (discontinued)</a></li>
-              <li><a href="https://plasmastarstudios.github.io/pssweb/Projects/software/psspocket/">psspocket(reconstruction)</a></li>
+              <li><a href="https://plasmastarstudios.github.io/pssweb/Projects/software/incom">Incom</a></li>
+              <li><a href="https://plasmastarstudios.github.io/pssweb/Projects/software/psspocket/">psspocket</a></li>
             </ul>
           </li>
           <li class="has-submenu">
@@ -148,11 +145,10 @@ const topbarTemplate = `
       </li>
       <li><a href="https://plasmastarstudios.github.io/pssweb/Account/Consumer/login/">Account</a></li> 
       <li><a href="#">🧺</a></li> 
-      <li><a herf="#">Version Beta 1.1.12</a></li>
+      <li><a href="#" style="border: 1px solid rgba(255,255,255,0.4); color: rgba(255,255,255,0.7); font-size: 11px;">v1.1.12</a></li>
     </ul>
   </nav>
 </header>
 `;
 
-// This line "injects" the code into the top of your body
 document.body.insertAdjacentHTML('afterbegin', topbarTemplate);
