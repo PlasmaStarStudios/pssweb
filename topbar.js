@@ -249,7 +249,7 @@ const topbarTemplate = `
   <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">☰</button>
   <nav>
     <ul>
-      <li><a href="https://plasmastarstudios.github.io/pssweb/index.html">Home</a></li>
+      <li><a href="https://plasmastarstudios.github.io/pssweb">Home</a></li>
       <li class="has-dropdown">
         <a href="https://plasmastarstudios.github.io/pssweb/Projects/">Projects</a>
         <ul class="dropdown">
